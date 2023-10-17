@@ -1,9 +1,4 @@
-
-        {
-            return head->data;
-        }
-        return 0;
-     }
-     int getTail()
-     {
-        if(!isEmpty())
+5);
+    l1.insertAtFront(6);
+    l1.insertAtFront(8);
+    l1.insetAtTail(9);

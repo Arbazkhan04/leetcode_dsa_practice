@@ -95,9 +95,9 @@ int main()
    linkList<int> link;
    link.insert(5);
    link.insert(10);
-      link.insert(10);
-         link.insert(10);
-            link.insert(20);
+   link.insert(10);
+   link.insert(10);
+   link.insert(20);
 //    link.displayRecursilvey();
 //    cout<<endl;
     cout<<link.reverse()<<endl;
