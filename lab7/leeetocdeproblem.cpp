@@ -183,3 +183,151 @@ public:
         return dummy->next;
     }
 };
+
+
+
+class node
+{
+public:
+    int data;
+    node* next;
+    node* pre;
+    node(int val)
+    {
+        data = val;
+        next = nullptr;
+        pre = nullptr;
+    }
+    
+};
+
+https://leetcode.com/problems/design-linked-list/submissions/
+// problem 5;
+
+class MyLinkedList {
+private:
+    node* head;
+    node* tail;
+public:
+    MyLinkedList() {
+        head=nullptr;
+        tail = nullptr;
+    }
+    
+    int get(int index) {
+        int ind=0;
+        node* temp=head;
+        while(temp!=nullptr)
+        {
+          if(ind==index)
+          {
+              return temp->data;
+          }
+            ind++;
+            temp= temp->next;
+        }
+        return -1;
+    }
+    
+    void addAtHead(int val) {
+        node* newNode  = new node(val);
+        if(head==nullptr)
+        {
+            head=newNode;
+            tail = newNode;
+        }
+        else
+        {
+            head->pre = newNode;
+            newNode->next = head;
+            head = newNode;
+        }
+    }
+    
+    void addAtTail(int val) {
+        node* newNode = new node(val);
+        if(head==nullptr)
+        {
+            head = newNode;
+            tail = newNode;
+        }
+        else
+        {
+            newNode->pre = tail;
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+    
+    void addAtIndex(int index, int val) {
+        node* newNode = new node(val);
+        if(index==0)
+        {
+           addAtHead(val); 
+        }
+        else
+        {
+        int ind = 0;
+        node* temp = head;
+        while(temp!=nullptr)
+        {
+            if(temp->next == nullptr && ind == index-1)
+            {
+                addAtTail(val);
+                break;
+            }
+            if(ind == index)
+            {
+                newNode->next = temp;
+                newNode->pre = temp->pre;
+                if (temp->pre != nullptr) {
+                    temp->pre->next = newNode;
+                } else {
+                    head = newNode; 
+                }
+                temp->pre = newNode;
+                break;
+            }
+            temp = temp->next;
+            ind++;
+        }
+        }
+    }
+    
+    void deleteAtIndex(int index) {
+        if(index == 0)
+        {
+            head = head->next;
+            head->pre = nullptr;
+        }
+         int ind = 0;
+        node* temp = head;
+        while(temp!=nullptr)
+        {
+            if(temp->next == nullptr)
+            {
+                temp->pre->next = nullptr;
+                break;
+            }
+            
+            if(ind == index)
+            {
+                temp->pre->next = temp->next;
+                temp->next->pre = temp->pre;
+                break;
+            }
+            ind++;
+            temp = temp->next;
+        }
+    }
+};
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList* obj = new MyLinkedList();
+ * int param_1 = obj->get(index);
+ * obj->addAtHead(val);
+ * obj->addAtTail(val);
+ * obj->addAtIndex(index,val);
+ * obj->deleteAtIndex(index);
+ */
