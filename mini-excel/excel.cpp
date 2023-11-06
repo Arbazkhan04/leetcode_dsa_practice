@@ -142,7 +142,12 @@ public:
         int rowIndex = getRowIndex();
         Cell *oriHead = origionalHead;
         Cell *utlis = nullptr; // previos cell of current inserted;
-        if (rowIndex == 0)     // it means there is only one row
+        if (rowIndex == -1)
+        {
+            cout << "current idnex not found" << endl;
+            return;
+        }
+        if (rowIndex == 0) // it means there is only one row
         {
             for (int i = 0; i < col; i++)
             {
@@ -164,8 +169,8 @@ public:
                 }
                 oriHead = oriHead->right;
             }
-            current = head;
-            // current = origionalHead;// do upate the curent
+            // current = head; no need
+            // // current = origionalHead;// do upate the curent
         }
         else
         {
@@ -199,6 +204,102 @@ public:
                 oriHead = oriHead->right;
             }
         }
+        rows++;
+    }
+    // onsert a row below to the current cell
+
+    void insertRowBelow()
+    {
+        int rowIndex = getRowIndex();
+        cout << "row index" << rowIndex << endl;
+        Cell *oriHead = origionalHead;
+        Cell *utlis = nullptr; // previos cell of current inserted;
+        if (rowIndex == -1)
+        {
+            cout << "current idnex not found" << endl;
+            return;
+        }
+        if (rowIndex == 0) // it means there is only one row
+        {
+            for (int i = 0; i < col; i++)
+            {
+                Cell *cell = new Cell(1);
+                if (i == 0)
+                {
+                    oriHead->down = cell;
+                    cell->up = oriHead;
+                    utlis = cell;
+                }
+                else
+                {
+                    oriHead->down = cell;
+                    cell->up = oriHead;
+                    cell->left = utlis;
+                    utlis->right = cell;
+                    utlis = cell;
+                }
+                oriHead = oriHead->right;
+            }
+            // current = head; no need
+            // current = origionalHead;// do upate the curent
+        }
+        else
+        {
+            Cell *cell = new Cell(1);
+            for (int i = 0; i < rowIndex; i++) // will give you the row index where you have to insert a row;
+            {
+                oriHead = oriHead->down;
+            }
+            for (int i = 0; i < col; i++)
+            {
+                Cell *temp = oriHead->down;
+
+                if (rowIndex + 1 == rows)
+                {
+                    for (int j = 0; j < col; j++)
+                    {
+                        Cell *cell = new Cell(1);
+                        if (j == 0)
+                        {
+                            oriHead->down = cell;
+                            cell->up = oriHead;
+                            utlis = cell;
+                        }
+                        else
+                        {
+                            oriHead->down = cell;
+                            cell->up = oriHead;
+                            cell->left = utlis;
+                            utlis->right = cell;
+                            utlis = cell;
+                        }
+                        oriHead = oriHead->right;
+                    }
+                    break; //end the loop as well;
+                }
+                else if (i == 0)
+                {
+                    oriHead->down = cell;
+                    cell->up = oriHead;
+                    cell->down = temp;
+                    temp->up = cell;
+                    utlis = cell;
+                }
+                else
+                {
+                    Cell *newCell = new Cell(1);
+                    oriHead->down = newCell;
+                    newCell->up = oriHead;
+                    newCell->down = temp;
+                    temp->up = newCell;
+                    utlis->right = newCell;
+                    newCell->left = utlis;
+                    utlis = newCell; // Update utlis to the newly inserted cell
+                }
+                oriHead = oriHead->right;
+            }
+        }
+        rows++;
     }
 
     int getRowIndex() // will give you the ucrrent index
@@ -223,8 +324,12 @@ public:
 
 int main()
 {
-    Excel excel(5,5);
+    Excel excel(5, 5);
     excel.displayGrid();
+    cout << endl;
     excel.insertAtAbove();
+    excel.displayGrid();
+    cout << endl;
+    excel.insertRowBelow();
     excel.displayGrid();
 }
