@@ -275,7 +275,7 @@ public:
                         }
                         oriHead = oriHead->right;
                     }
-                    break; //end the loop as well;
+                    break; // end the loop as well;
                 }
                 else if (i == 0)
                 {
@@ -302,6 +302,137 @@ public:
         rows++;
     }
 
+    void insertColumnToRight()
+    {
+        Cell *oriHead = origionalHead;
+        cout<<"jdklal"<<endl;
+        int colIndex = getColumnIndex();
+        int rowIdnex = getRowIndex();
+        cout << colIndex << "rowdllj" << rowIdnex<<endl;
+        if(colIndex==-1 || rowIdnex==-1)
+        {
+            cout<<"idnex are found"<<endl;
+        }
+        for (int i = 0; i < rowIdnex; i++)
+        {
+            oriHead = oriHead->down;
+        }
+        for (int i = 0; i < colIndex; i++)
+        {
+            oriHead = oriHead->right;
+        }
+        // if current cell is on mid
+        if (oriHead->right != nullptr)
+        {
+            Cell *utlis = nullptr;
+            Cell *top = oriHead->up;
+            Cell *buttom = oriHead->down;
+            Cell *tempRight = oriHead->right;
+            Cell *cell = new Cell(3);
+            oriHead->right = cell;
+            cell->left = oriHead;
+            tempRight->left = cell;
+            cell->right = tempRight;
+            utlis = cell;
+
+            // for top
+            while (top != nullptr)
+            {
+                Cell *c = new Cell(3);
+                Cell *topRight = top->right;
+                top->right = c;
+                c->left = top;
+                topRight->left = c;
+                c->right = topRight;
+                utlis->up = c;
+                c->down = utlis;
+                utlis = c;
+
+                top = top->up;
+            }
+
+            //   for buttom
+            utlis = cell; // update the utlis again
+            while (buttom != nullptr)
+            {
+                Cell *c = new Cell(3);
+                Cell *buttomRight = buttom->right;
+                buttom->right = c;
+                c->left = buttom;
+                buttomRight->left = c;
+                c->right = buttomRight;
+                utlis->down = c;
+                c->up = utlis;
+                utlis = c;
+
+                buttom = buttom->down;
+            }
+        }
+        // and if the current cell is the last lest cell
+        else
+        {
+            Cell *utlis = nullptr;
+            Cell *top = oriHead->up;
+            Cell *buttom = oriHead->down;
+             Cell *cell = new Cell(3);
+            oriHead->right = cell;
+            cell->left = oriHead;
+            utlis = cell;
+
+               // for top
+            while (top != nullptr)
+            {
+                Cell *c = new Cell(3);
+                // Cell *topRight = top->right;
+                top->right = c;
+                c->left = top;
+                // topRight->left = c;
+                // c->right = topRight;
+                utlis->up = c;
+                c->down = utlis;
+                utlis = c;
+
+                top = top->up;
+            }
+
+            //   for buttom
+            utlis = cell; // update the utlis again
+            while (buttom != nullptr)
+            {
+                Cell *c = new Cell(3);
+                // Cell *buttomRight = buttom->right;
+                buttom->right = c;
+                c->left = buttom;
+                // buttomRight->left = c;
+                // c->right = buttomRight;
+                utlis->down = c;
+                c->up = utlis;
+                utlis = c;
+
+                buttom = buttom->down;
+            }
+
+        }
+        col++;
+    }
+    int getColumnIndex()
+    {
+        Cell *forRow = origionalHead;
+        for (int i = 0; i < col; i++)
+        {
+            Cell *forCol = forRow;
+            for (int j = 0; j < rows; j++)
+            {
+                if (forCol == current)
+                {
+                    return i; // get row index
+                }
+                forCol = forCol->down;
+            }
+            forRow = forRow->right;
+        }
+        return -1;
+    }
     int getRowIndex() // will give you the ucrrent index
     {
         Cell *forRow = origionalHead;
@@ -331,5 +462,8 @@ int main()
     excel.displayGrid();
     cout << endl;
     excel.insertRowBelow();
+    excel.displayGrid();
+    cout << endl;
+    excel.insertColumnToRight();
     excel.displayGrid();
 }
