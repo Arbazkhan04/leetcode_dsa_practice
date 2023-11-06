@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -30,6 +29,7 @@ public:
     Cell *pre;
     Cell *next;
     Cell *current;
+    Cell *origionalHead;
     Excel(int rows, int cols)
     {
         this->rows = rows;
@@ -43,13 +43,21 @@ public:
         for (int i = 0; i < rows; i++)
         {
             head = new Cell(0);
-            Cell* temp = head;
+            if (i == 0)
+            {
+                origionalHead = head;
+            }
+            Cell *temp = head;
             // for columns
-             int count = 0;
+            int count = 0;
             for (int j = i; j < col; j++)
             {
+                if (j == 0)
+                {
+                    continue;
+                }
                 Cell *cell = new Cell(0);
-               
+
                 if (next != nullptr && pre != nullptr)
                 {
                     if (count == 0)
@@ -75,27 +83,28 @@ public:
                 {
                     temp->right = cell;
                     cell->left = temp;
+
                     temp = cell;
                 }
             }
-            count =0; //do update the count;
-            next= head->right; //do update next;
+            count = 0;          // do update the count;
+            next = head->right; // do update next;
             // for rows
             temp = head;
-             
+
             for (int k = i + 1; k < rows; k++)
             {
-             
+
                 Cell *cell = new Cell(0);
-                
-                if(next != nullptr && pre != nullptr)
+
+                if (next != nullptr && pre != nullptr)
                 {
-                   pre = pre->down;
-                   cell->left = pre;
-                   pre->right = cell;
-                   cell->up = temp;
-                   temp->down = cell;
-                   temp = cell;
+                    pre = pre->down;
+                    cell->left = pre;
+                    pre->right = cell;
+                    cell->up = temp;
+                    temp->down = cell;
+                    temp = cell;
                 }
                 else
                 {
@@ -109,28 +118,113 @@ public:
             pre = head->down;
         }
         current = head;
+        // current = origionalHead;
     }
-
 
     void displayGrid()
     {
-       Cell* dcolumn = current;
-       while(dcolumn!=nullptr)//up is not equal nullptr;
-       {
-           Cell* temp = dcolumn;
-          while(temp!=nullptr) //when temp is equal to nulltptr it  means you are at left = nullptr
-          {
-            cout<<temp->data<<"-->";
-            temp = temp->left;
-          }
-          cout<<"Null"<<endl;
-          dcolumn = dcolumn->up;
-       }
+        Cell *dcolumn = origionalHead;
+        while (dcolumn != nullptr) // up is not equal nullptr;
+        {
+            Cell *temp = dcolumn;
+            while (temp != nullptr) // when temp is equal to nulltptr it  means you are at left = nullptr
+            {
+                cout << temp->data << "-->";
+                temp = temp->right;
+            }
+            cout << "Null" << endl;
+            dcolumn = dcolumn->down;
+        }
+    }
+
+    void insertAtAbove()
+    {
+        int rowIndex = getRowIndex();
+        Cell *oriHead = origionalHead;
+        Cell *utlis = nullptr; // previos cell of current inserted;
+        if (rowIndex == 0)     // it means there is only one row
+        {
+            for (int i = 0; i < col; i++)
+            {
+                Cell *cell = new Cell(1);
+                if (i == 0)
+                {
+                    oriHead->up = cell;
+                    cell->down = oriHead;
+                    utlis = cell;
+                    origionalHead = cell; // update the origional head;
+                }
+                else
+                {
+                    oriHead->up = cell;
+                    cell->down = oriHead;
+                    cell->left = utlis;
+                    utlis->right = cell;
+                    utlis = cell;
+                }
+                oriHead = oriHead->right;
+            }
+            current = head;
+            // current = origionalHead;// do upate the curent
+        }
+        else
+        {
+            Cell *cell = new Cell(1);
+            for (int i = 0; i < rowIndex; i++) // will give you the row index where you have to insert a row;
+            {
+                oriHead = oriHead->down;
+            }
+            for (int i = 0; i < col; i++)
+            {
+                Cell *temp = oriHead->up;
+                if (i == 0)
+                {
+                    oriHead->up = cell;
+                    cell->down = oriHead;
+                    cell->up = temp;
+                    temp->down = cell;
+                    utlis = cell;
+                }
+                else
+                {
+                    Cell *newCell = new Cell(1);
+                    oriHead->up = newCell;
+                    newCell->down = oriHead;
+                    newCell->up = temp;
+                    temp->down = newCell;
+                    utlis->right = newCell;
+                    newCell->left = utlis;
+                    utlis = newCell; // Update utlis to the newly inserted cell
+                }
+                oriHead = oriHead->right;
+            }
+        }
+    }
+
+    int getRowIndex() // will give you the ucrrent index
+    {
+        Cell *forRow = origionalHead;
+        for (int i = 0; i < rows; i++)
+        {
+            Cell *forCol = forRow;
+            for (int j = 0; j < col; j++)
+            {
+                if (forCol == current)
+                {
+                    return i; // get row index
+                }
+                forCol = forCol->right;
+            }
+            forRow = forRow->down;
+        }
+        return -1;
     }
 };
 
 int main()
 {
     Excel excel(5,5);
+    excel.displayGrid();
+    excel.insertAtAbove();
     excel.displayGrid();
 }
