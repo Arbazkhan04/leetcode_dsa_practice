@@ -1,1 +1,2 @@
-ell *utlis = nullptr;
+   cout<<oriHead->down->data;
+        cout<<oriHead->left->data<<endl;

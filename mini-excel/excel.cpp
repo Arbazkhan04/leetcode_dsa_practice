@@ -550,8 +550,8 @@ public:
             oriHead = oriHead->right;
         }
         Cell *temp = oriHead; // temp is pointing to current
-        // cout << colIndex << "InsertCellByRightShift " << rowIdnex << endl;
-        // cout << oriHead->data << endl; // orihead is poiting to current cell
+        cout << colIndex << "InsertCellByRightShift " << rowIdnex << endl;
+        cout << oriHead->data << endl; // orihead is poiting to current cell
 
         Cell *cell = new Cell(8);
         if (temp->right != nullptr)
@@ -618,8 +618,9 @@ public:
         {
             utlisDown = oriHead->left->down;
         }
-        cout<<oriHead->data<<endl<<endl;
-       Cell *tempLastElement = oriHead;
+        cout << oriHead->data << endl
+             << endl;
+        Cell *tempLastElement = oriHead;
 
         while (ultisUp != nullptr)
         {
@@ -646,46 +647,230 @@ public:
             utlisDown = utlisDown->down;
             tempLastElement = newCell;
         }
-    col++;
-} 
-int getColumnIndex()
-{
-    Cell *forRow = origionalHead;
-    for (int i = 0; i < col; i++)
-    {
-        Cell *forCol = forRow;
-        for (int j = 0; j < rows; j++)
-        {
-            if (forCol == current)
-            {
-                return i; // get row index
-            }
-            forCol = forCol->down;
-        }
-        forRow = forRow->right;
+        col++;
     }
-    return -1;
-}
-int getRowIndex() // will give you the ucrrent index
-{
-    Cell *forRow = origionalHead;
-    for (int i = 0; i < rows; i++)
+
+    void InsertCellByDownShift()
     {
-        Cell *forCol = forRow;
-        for (int j = 0; j < col; j++)
+        Cell *oriHead = origionalHead; // oriHead is used to reached on current ptr;
+        int colIndex = getColumnIndex();
+        int rowIdnex = getRowIndex();
+
+        if (colIndex == -1 || rowIdnex == -1)
         {
-            if (forCol == current)
-            {
-                return i; // get row index
-            }
-            forCol = forCol->right;
+            cout << "idnex are found" << endl;
         }
-        forRow = forRow->down;
+        for (int i = 0; i < rowIdnex; i++)
+        {
+            oriHead = oriHead->down;
+        }
+        for (int i = 0; i < colIndex; i++)
+        {
+            oriHead = oriHead->right;
+        }
+        Cell *temp = oriHead; // temp is pointing to current
+        // cout << colIndex << "right is row index " << rowIdnex << endl;
+        // cout << oriHead->data << endl; // orihead is poiting to current cell
+        // cout<<oriHead->down->data;
+        // cout<<oriHead->left->data<<endl;
+        Cell *cell = new Cell(4);
+        if (temp->left != nullptr)
+        {
+            temp->left->right = cell;
+            cell->left = temp->left;
+        }
+
+        // if curr is the rightmost cell;
+        //  cell->down = temp;
+        //  temp->up = cell;
+
+        if (temp->up != nullptr)
+        {
+            temp->up->down = cell;
+            cell->up = temp->up;
+        }
+
+        if (temp->right != nullptr)
+        {
+            temp->right->left = cell;
+            cell->right = temp->right;
+        }
+
+        cell->down = temp;
+        temp->up = cell;
+
+        Cell *tempLeft = temp->left;
+        Cell *tempRight = temp->right;
+
+        // for left down
+        while (tempLeft->down != nullptr)
+        {
+            tempLeft = tempLeft->down;
+            tempLeft->right = temp;
+            temp->left = tempLeft;
+
+            // tempLeft = tempLeft->down;
+            temp = temp->down;
+        }
+
+        temp = oriHead; // update the temp again so that it will point to the current ptr again
+
+        // for right down
+        while (tempRight->down != nullptr)
+        {
+            tempRight = tempRight->down;
+            tempRight->left = temp;
+            temp->right = tempRight;
+
+            // tempRight = tempRight->down;
+            temp = temp->down;
+        }
+
+        // fint the last elemetn of current cell;
+        while (oriHead->down != nullptr)
+        {
+            oriHead = oriHead->down; // you will get last element of current row;
+        }
+
+        Cell *tempLastElement = oriHead;
+        Cell *utlisLeft = tempLastElement->up->left;
+        Cell *utlisRight = tempLastElement->up->right;
+
+        // for left side
+        while (utlisLeft != nullptr)
+        {
+            Cell *nCell = new Cell(0);
+            nCell->up = utlisLeft;
+            utlisLeft->down = nCell;
+            nCell->right = tempLastElement;
+            tempLastElement->left = nCell;
+
+            tempLastElement = nCell;
+            utlisLeft = utlisLeft->left;
+        }
+        tempLastElement = oriHead;
+        // for right side
+        while (utlisRight != nullptr)
+        {
+            Cell *nCell = new Cell(0);
+            nCell->up = utlisRight;
+            utlisRight->down = nCell;
+            nCell->left = tempLastElement;
+            tempLastElement->right = nCell;
+
+            tempLastElement = nCell;
+            utlisRight = utlisRight->right;
+        }
+
+        rows++;
     }
-    return -1;
-}
-}
-;
+
+    void DeleteCellByLeftShift()
+    {
+        
+    }
+
+    void deleteColumn()
+    {
+
+        Cell *tempCurr = current;
+        // it mean current firwst colums
+        if (tempCurr->left == nullptr)
+        {
+            origionalHead = current->right;
+            current = current->right;
+            // two pointer texhnique
+            Cell *tempUp = tempCurr;
+            Cell *tempDown = tempCurr;
+            while (tempUp != nullptr)
+            {
+                tempUp->right->left = nullptr;
+                tempUp = tempUp->up;
+            }
+            while (tempDown != nullptr)
+            {
+                tempDown->right->left = nullptr;
+                tempDown = tempDown->down;
+            }
+        }
+        // current lies in last column
+        else if (tempCurr->right == nullptr)
+        {
+             current = current->left;//update the current
+            Cell *tempUp = tempCurr;
+            Cell *tempDown = tempCurr;
+            while (tempUp != nullptr)
+            {
+                tempUp->left->right = nullptr;
+                tempUp = tempUp->up;
+            }
+            while (tempDown != nullptr)
+            {
+                tempDown->left->right = nullptr;
+                tempDown = tempDown->down;
+            }
+        }
+        // otherwise it will lise in the middle
+        else
+        {
+            current = current->left;//update the current
+
+            Cell *tempUp = tempCurr;
+            Cell *tempDown = tempCurr;
+            while (tempUp != nullptr)
+            {
+                tempUp->left->right = tempUp->right;
+                tempUp->right->left = tempUp->left;
+                tempUp = tempUp->up;
+            }
+            while (tempDown != nullptr)
+            {
+                tempDown->left->right = tempDown->right;
+                tempDown->right->left = tempDown->left;
+                tempDown = tempDown->down;
+            }
+        }
+        cout<<current->data<<endl;
+        col--;
+    }
+
+    int getColumnIndex()
+    {
+        Cell *forRow = origionalHead;
+        for (int i = 0; i < col; i++)
+        {
+            Cell *forCol = forRow;
+            for (int j = 0; j < rows; j++)
+            {
+                if (forCol == current)
+                {
+                    return i; // get row index
+                }
+                forCol = forCol->down;
+            }
+            forRow = forRow->right;
+        }
+        return -1;
+    }
+    int getRowIndex() // will give you the ucrrent index
+    {
+        Cell *forRow = origionalHead;
+        for (int i = 0; i < rows; i++)
+        {
+            Cell *forCol = forRow;
+            for (int j = 0; j < col; j++)
+            {
+                if (forCol == current)
+                {
+                    return i; // get row index
+                }
+                forCol = forCol->right;
+            }
+            forRow = forRow->down;
+        }
+        return -1;
+    }
+};
 
 int main()
 {
@@ -700,10 +885,16 @@ int main()
     cout << endl;
     excel.insertColumnToRight();
     excel.displayGrid();
-
+    cout << endl;
     excel.insertColumnToLeft();
     excel.displayGrid();
-
+    cout << endl;
     excel.InsertCellByRightShift();
+    excel.displayGrid();
+    cout << endl;
+    excel.InsertCellByDownShift();
+    excel.displayGrid();
+
+    excel.deleteColumn();
     excel.displayGrid();
 }
