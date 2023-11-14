@@ -431,12 +431,12 @@ public:
         // and if the current cell is the last lest cell
         else
         {
-            makeRowForRight();
+            makeColumnForRight();
         }
         col++;
     }
 
-    void makeRowForRight()
+    void makeColumnForRight()
     {
         Cell *utlis = nullptr;
         Cell *oriHead = current;
@@ -1098,7 +1098,8 @@ public:
     int getRangeAverage(Cell *starting, Cell *ending)
     {
         int getSum = getRnageSum(starting, ending);
-        return getSum / 2; // dont dive it by count the number
+        int result = getSum / count(starting, ending);
+        return result;
     }
     // part 18
     void wizard(Cell *starting, Cell *ending, Cell *selectedCell)
@@ -1134,7 +1135,7 @@ public:
             cout << "selected cell is representing to nullptr" << endl;
             return;
         }
-        selectedCell->data = result;
+        selectedCell->data = result; // put data in user selected cell;
         cout << result << "this is result " << endl;
     }
     int selectFunction()
@@ -1145,6 +1146,8 @@ public:
         cout << "3-COUNT" << endl;
         cout << "4-MAX" << endl;
         cout << "5-MIN" << endl;
+        cout << "6-Copy/Paste" << endl;
+        cout << "7-Cut/Paste" << endl;
         cout << "Enter your operation(1,2,3,4,5) ";
         cin >> op;
         return op;
@@ -1284,8 +1287,38 @@ public:
 
     void paste(vector<vector<int>> copyOrCut)
     {
+
         vector<vector<int>> copied = copyOrCut;
-        // DO IT AGAIN!
+
+        if (current == nullptr)
+        {
+            cout << "poiting to null" << endl;
+            return;
+        }
+        for (int i = 0; i < copied.size(); i++)
+        {
+            Cell *temp = current;
+            for (int j = 0; j < copied[0].size(); j++)
+            {
+                temp->data = copied[i][j];
+                if (temp->right == nullptr && j < copied[0].size() - 1)
+                {
+                    makeColumnForRight();
+                    temp = current->right;
+                  
+                }
+                else
+                {
+                    cout << getColumnIndex() << "col" << getRowIndex() << "row" << endl;
+                    temp = temp->right;
+                }
+            }
+            if (current->down == nullptr && i < copied.size() - 1)
+            {
+                makeRowAtEnd();
+            }
+            current = current->down;
+        }
     }
     vector<vector<int>> utlisForCopyOrPaste(Cell *starting, Cell *ending, string temp)
     {
@@ -1330,10 +1363,10 @@ public:
         }
         else if (startingRow > endingRow && startingCol > endingCol)
         {
-            for (int i = startingRow; i >= endingRow; i--)
+            for (int i = endingRow; i <= startingRow; i++)
             {
                 vector<int> row;
-                for (int j = startingCol; j >= endingCol; j--)
+                for (int j = endingCol; j <= startingCol; j++)
                 {
                     Cell *cell = getCell(i, j);
                     if (cell != nullptr)
@@ -1348,17 +1381,19 @@ public:
                 Copy.push_back(row);
             }
         }
+
         else if (startingRow < endingRow && startingCol > endingCol)
         {
             for (int i = startingRow; i <= endingRow; i++)
             {
                 vector<int> row;
-                for (int j = startingCol; j >= endingCol; j--)
+                for (int j = endingCol; j <= startingCol; j++)
                 {
                     Cell *cell = getCell(i, j);
                     if (cell != nullptr)
                     {
                         row.push_back(cell->data);
+                        cout << i << j;
                     }
                     if (temp == "cut")
                     {
@@ -1368,9 +1403,10 @@ public:
                 Copy.push_back(row);
             }
         }
-        else if (startingRow > endingRow && endingCol < startingCol)
+        else if (startingRow > endingRow && endingCol > startingCol)
         {
-            for (int i = startingRow; i >= endingRow; i--)
+
+            for (int i = endingRow; i <= startingRow; i++)
             {
                 vector<int> row;
                 for (int j = startingCol; j <= endingCol; j++)
@@ -1435,36 +1471,36 @@ int main()
     Excel excel(5, 5);
     excel.displayGrid();
     cout << endl;
-    excel.insertAtAbove();
-    excel.displayGrid();
-    cout << endl;
-    excel.insertRowBelow();
-    excel.displayGrid();
-    cout << endl;
-    excel.insertColumnToRight();
-    excel.displayGrid();
-    cout << endl;
-    excel.insertColumnToLeft();
-    excel.displayGrid();
-    cout << endl;
-    excel.InsertCellByRightShift();
-    excel.displayGrid();
-    cout << endl;
-    excel.InsertCellByDownShift();
-    excel.displayGrid();
+    // excel.insertAtAbove();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.insertRowBelow();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.insertColumnToRight();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.insertColumnToLeft();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.InsertCellByRightShift();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.InsertCellByDownShift();
+    // excel.displayGrid();
 
-    excel.deleteColumn();
-    excel.displayGrid();
-    cout << endl;
+    // excel.deleteColumn();
+    // excel.displayGrid();
+    // cout << endl;
 
-    excel.DeleteRow();
-    excel.displayGrid();
+    // excel.DeleteRow();
+    // excel.displayGrid();
 
-    excel.ClearColumn();
-    excel.displayGrid();
-    cout << endl;
-    excel.ClearRow();
-    excel.displayGrid();
+    // excel.ClearColumn();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.ClearRow();
+    // excel.displayGrid();
 
     // cout << endl;
     // int sum = excel.getRnageSum(excel.origionalHead, excel.origionalHead->down->down->down->down->right->right->right->right);
@@ -1477,22 +1513,20 @@ int main()
     // excel.wizard(excel.origionalHead, excel.origionalHead->down->down->down->down->right->right->right->right, excel.origionalHead->down->down);
     // excel.displayGrid();
 
-    // cout << endl;
-    // excel.copiedElementDisplay(); // jsut for teesting purpose
-    // cout<<endl;
     // excel.displayGrid();
-    // vector<vector<int>> copied = excel.cut(excel.origionalHead->right->right, excel.origionalHead->down->down);
-    // excel.copiedElementDisplay(copied); // jsut for teesting purpose
+    excel.current = excel.origionalHead->down->down->down->down;
+    vector<vector<int>> copied = excel.copy(excel.origionalHead->right->down, excel.origionalHead->right->right);
+    excel.copiedElementDisplay(copied); // jsut for teesting purpose
 
-    //   excel.paste(copied);
-    //  excel.displayGrid();
+    excel.paste(copied);
+    excel.displayGrid();
     // cout<<excel.getColumnIndex()<<"coindex "<<excel.getRowIndex()<<endl;
 
-    excel.current = excel.origionalHead;
-    excel.current->right->data = 2;
-    excel.DeleteCellByLeftShift();
-    excel.displayGrid();
-    cout << endl;
-    excel.deleteCellByUpShift();
-    excel.displayGrid();
+    // excel.current = excel.origionalHead;
+    // excel.current->right->data = 2;
+    // excel.DeleteCellByLeftShift();
+    // excel.displayGrid();
+    // cout << endl;
+    // excel.deleteCellByUpShift();
+    // excel.displayGrid();
 }
