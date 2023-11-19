@@ -1,4 +1,5 @@
 #include <iostream>
+#include<vector>
 using namespace std;
 
 class Node
@@ -117,22 +118,67 @@ public:
         return 1+max(left,right);
     }
     void sort(){
-        
+       vector<int> num = {5,3,9,1,2,6,7};
+       for(int n : num){
+           insert(n);
+       }
+       // helper funciton to soet the array;
+       cout<<"sorted data "<<endl;
+
+        helper(root);
+    }
+
+     void helper(Node* head){
+       if(head==nullptr){
+        return;
+       }
+       helper(head->left);
+       cout<<head->data<<" ";
+       helper(head->right);
+    }
+
+    int internalNodeCount(Node* head){
+        if(head==nullptr){
+            return 0;
+        }
+        int count = 0;
+        if((head->left && !(head->right)) ||  (!(head->right)&& head->left)){
+          count++;
+        }
+        count+=internalNodeCount(head->left)+internalNodeCount(head->right);
+       return count;
+    }
+    int countLeave(Node* head){
+        if(head==nullptr){
+            return 0;
+        }
+        int num =0;
+        if(!head->left && !head->right){
+        num++;
+        }
+        num+=countLeave(head->left)+countLeave(head->right);
+
+        return num;
     }
 };
 
 int main()
 {
     tree t;
-    t.insert(6);
-    t.insert(5);
-    t.insert(3);
-    t.insert(4);
-    cout << t.heightOfBST(t.root) << endl;
-    t.Even_Counts(t.root);
-    cout << t.count << "Even number ";
-    t.print(t.root);
-    cout << t.searchInBst(t.root, 1);
+    t.sort();
+    cout<<endl;
+    cout<<t.internalNodeCount(t.root);
+    cout<<t.countLeave(t.root);
+
+    // t.insert(6);
+    // t.insert(5);
+    // t.insert(3);
+    // t.insert(4);
+    // cout << t.heightOfBST(t.root) << endl;
+    // t.Even_Counts(t.root);
+    // cout << t.count << "Even number ";
+    // t.print(t.root);
+    // cout << t.searchInBst(t.root, 1);
 }
 
 
