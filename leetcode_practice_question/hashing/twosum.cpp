@@ -30,3 +30,63 @@ public:
        return ' ';
     }
 };
+
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        unordered_map<char,int> map;
+        int ans =0;
+        for(char c:magazine){
+            map[c]++;
+        }
+        for(char c:ransomNote){
+            if(map.find(c)!=map.end()){
+                map[c]--;
+                if(map[c]==0){
+                    map.erase(c);
+                }
+                ans++;
+            }
+        }
+        return ans==ransomNote.size();
+    }
+};
+
+class Solution {
+public:
+    int numJewelsInStones(string jewels, string stones) {
+        unordered_map<char,int> jewel;
+        for(char c:jewels){
+            jewel[c]++;
+        }
+        int ans=0;
+        for(auto c:stones){
+            if(jewel.find(c)!=jewel.end()){
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+       int left = 0;
+       int ans=0;
+       unordered_map<char,int> seen;
+       for(int i=0;i<s.size();i++)
+       {
+           if(seen.find(s[i])!=seen.end()){
+               while(seen[s[i]]>0){
+                    seen[s[left]]--;
+                    left++;
+               }
+               seen.erase(s[i]);
+           }
+          seen[s[i]]++;
+          ans = max(ans,i-left+1);
+       }
+       return ans; 
+    }
+};
