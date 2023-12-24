@@ -87,3 +87,72 @@ public:
         return pre;
     }
 };
+
+class Solution {
+public:
+    vector<vector<int>> findWinners(vector<vector<int>>& matches) {
+        unordered_map<int,int> winner,losser;
+        for(auto v:matches){
+            int win = v[0];
+            int loss = v[1];
+            winner[win]++;
+            losser[loss]++;
+        }
+        vector<int> w;
+        for(auto [key,val]:winner){
+            if(losser.find(key)==losser.end()){
+                w.push_back(key);
+            }
+        }
+        vector<int> l;
+        for(auto [key,val]:losser)
+        {
+            if(val==1){
+                l.push_back(key);
+            }
+        }
+        sort(w.begin(),w.end());
+        sort(l.begin(),l.end());
+        vector<vector<int>> ans;
+        ans.push_back(w);
+        ans.push_back(l);
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int largestUniqueNumber(vector<int>& nums) {
+        unordered_map<int,int> map;
+        int ans=INT_MIN;
+        for(auto num:nums){
+            map[num]++;
+        }
+        for(auto [key,val]:map){
+            if(val==1){
+                ans = max(ans,key);
+            }
+        }
+        return ans>0?ans:-1;
+    }
+};
+
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        unordered_map<char,int> map;
+        for(char c:text){
+            if(c=='a'||c=='b'||c=='l'||c=='o'||c=='n'){
+                map[c]++;
+            }
+        }
+        int ans = 0;
+        for(auto [key,val]:map){
+            if(key=='l'||key=='o'){
+                val = val/2;
+            }
+            ans+=val;
+        }
+        return ans/5;
+    }
+};
