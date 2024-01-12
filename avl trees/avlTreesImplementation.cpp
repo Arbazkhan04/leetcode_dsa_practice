@@ -45,17 +45,23 @@ class avlTree{
                 root->right = new node(data);
             }
         }
+
+        
     }
     int heightDifference(node* n){
         return abs(height(n->left)-height(n->right));
     }
     int height(node* node){
         if(!node){
-            return 0;
+            return -1;
         }
         int left = height(node->left);
         int right = height(node->right);
-        return 1+max(left,right);
+        int height =  1+max(left,right);
+        node->height = height;
+        return height;
+
+
     }
     bool isBalanced(node* n){
         int height = heightDifference(n);
